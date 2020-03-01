@@ -9,9 +9,19 @@ namespace APBD
     {
         static async Task Main(string[] args)
         {
-            var url = args[0];
+            if (String.IsNullOrEmpty(args[0]))
+            {
+                throw new System.ArgumentNullException();
+            }
 
-            await Program.GetWebPage(url);
+            var url = new UriBuilder(args[0]).Uri;
+            
+            if (!Uri.IsWellFormedUriString(url.ToString(), UriKind.Absolute))
+            {
+                throw new System.ArgumentException();
+            }
+
+            await Program.GetWebPage(url.ToString());
         }
 
         public static async Task GetWebPage(String url)
