@@ -9,7 +9,7 @@ namespace APBD
     {
         static async Task Main(string[] args)
         {
-            var url = "https://www.pja.edu.pl/";
+            var url = args[0];
 
             await Program.GetWebPage(url);
         }
