@@ -53,6 +53,12 @@ namespace APBD
                 .Select(match => match.Value)
                 .Distinct();
 
+            if (!matchResult.Any()) 
+            {
+                Console.WriteLine("Nie znaleziono emaili");
+                return;
+            }
+
             foreach (var email in matchResult)
             {
                 Console.WriteLine(email);
