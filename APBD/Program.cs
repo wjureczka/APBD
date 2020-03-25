@@ -1,68 +1,74 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using APBD.Models;
 
 namespace APBD
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
-            if (String.IsNullOrEmpty(args[0]))
+            var dataPath = "data.csv";
+            var resultPath = "żesult.xml";
+            var extensionType = "xml";
+            
+            if (!String.IsNullOrEmpty(args[0]))
             {
-                throw new System.ArgumentNullException();
+                dataPath = args[0];
             }
 
-            var uri = new UriBuilder(args[0]).Uri;
+            var isPathValid = dataPath.IndexOfAny(Path.GetInvalidPathChars()) == -1;
 
-            if (!Uri.IsWellFormedUriString(uri.ToString(), UriKind.Absolute))
+            if (!isPathValid)
             {
-                throw new System.ArgumentException();
+                throw new ArgumentException("Podana ścieżka jest niepoprawna");
             }
 
-            await Program.GetWebPage(uri.ToString());
-        }
-
-        public static async Task GetWebPage(String url)
-        {
-            using var httpClient = new HttpClient();
-            String pageSource = "";
-
-            try
+            if (!File.Exists(dataPath))
             {
-                pageSource = await httpClient.GetStringAsync(url);
-            }
-            catch (Exception error)
-            {
-                Console.WriteLine("Błąd wczasie pobierania strony");
-                Console.WriteLine(error);
-                return;
+                throw new FileNotFoundException("Plik " + dataPath + " nie istnieje");
             }
 
-
-            var emailRegex = @"(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"
-                             + @"((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\."
-                             + @"([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
-                             + @"([a-zA-Z]+[\w-]+\.)+[a-zA-Z]{2,4})";
-
-            var matchResult = Regex
-                .Matches(pageSource, emailRegex)
-                .Select(match => match.Value)
-                .Distinct();
-
-            if (!matchResult.Any()) 
+            if (!String.IsNullOrEmpty(args[1]))
             {
-                Console.WriteLine("Nie znaleziono emaili");
-                return;
+                resultPath = args[1];
             }
-
-            foreach (var email in matchResult)
+            
+            if (!String.IsNullOrEmpty(args[2]))
             {
-                Console.WriteLine(email);
+                extensionType = args[2];
             }
+            
+            ArrayList Students = new ArrayList();
+            
+            var fi = new FileInfo(dataPath);
+            using (var stream = new StreamReader(fi.OpenRead()))
+            {
+                string line = null;
+                while ((line = stream.ReadLine()) != null)
+                {
+                    string[] columns = line.Split(',');
+                    
+                    Student Student = new Student();
+
+                    Student.Name = columns[0];
+                    Student.Surname = columns[1];
+                    Student.Studies = columns[2];
+                    Student.StudiesType = columns[3];
+                    Student.StudentId = columns[4];
+                    Student.Birthday = DateTime.Parse(columns[5]);
+                    Student.Email = columns[6];
+                    Student.MothersName = columns[7];
+                    Student.FathersName = columns[8];
+                }
+            }
+            //stream.Dispose();
         }
     }
 }
