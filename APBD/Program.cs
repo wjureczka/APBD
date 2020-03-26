@@ -74,6 +74,8 @@ namespace APBD
             {
                 StudentParser.UniversityToJSON(university, resultPath);
             }
+
+            throw new ArgumentException("There is no parser for extension");
         }
     }
 }
