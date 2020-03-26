@@ -13,7 +13,7 @@
         }
         private string email { get; set; }
 
-        [XmlAttribute("email")]
+        [XmlElement("email")]
         public string Email
         {
             get => email;
@@ -28,7 +28,7 @@
         
         private string name { get; set; }
         
-        [XmlAttribute("fname")]
+        [XmlElement("fname")]
         public string Name
         {
             get => name;
@@ -43,7 +43,7 @@
         
         private string surname { get; set; }
         
-        [XmlAttribute("lname")]
+        [XmlElement("lname")]
         public string Surname
         {
             get => surname;
@@ -56,39 +56,19 @@
             }
         }
 
-        private string studies { get; set; }
+        private Study study { get; set; }
         
-        [XmlAttribute("studies")]
-        public string Studies
+        [XmlElement("studies")]
+        public Study Study
         {
-            get => studies;
+            get => study;
 
-            set
-            {
-                if (string.IsNullOrEmpty(value)) throw new NotValidStudentData("Studies: " + value);
-
-                studies = value;
-            }
-        }
-
-        private string studiesType { get; set; }
-
-        [XmlAttribute("studiesType")]
-        public string StudiesType
-        {
-            get => studiesType;
-
-            set
-            {
-                if (string.IsNullOrEmpty(value)) throw new NotValidStudentData("StudiesType: " + value);
-
-                studiesType = value;
-            }
+            set => study = value;
         }
 
         private DateTime birthDate { get; set; }
         
-        [XmlAttribute("birthdate")]
+        [XmlElement("birthdate")]
         public DateTime Birthdate
         {
             get => birthDate;
@@ -103,7 +83,7 @@
 
         private string mothersName { get; set; }
         
-        [XmlAttribute("mothersName")]
+        [XmlElement("mothersName")]
         public string MothersName
         {
             get => mothersName;
@@ -118,7 +98,7 @@
         
         private string fathersName { get; set; }
         
-        [XmlAttribute("fathersName")]
+        [XmlElement("fathersName")]
         public string FathersName
         {
             get => fathersName;
@@ -133,6 +113,7 @@
         
         private string studentId { get; set; }
         
+        [XmlAttribute("indexNumber")]
         public string StudentId
         {
             get => studentId;

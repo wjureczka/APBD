@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using APBD.Exceptions;
 using APBD.Models;
@@ -23,13 +25,12 @@ namespace APBD.Services
                     string[] columns = line.Split(',');
 
                     Student student = new Student();
-                    
+
                     try
                     {
                         student.Name = columns[0];
                         student.Surname = columns[1];
-                        student.Studies = columns[2];
-                        student.StudiesType = columns[3];
+                        student.Study = new Study(columns[2], columns[3]);
                         student.StudentId = columns[4];
                         student.Birthdate = DateTime.Parse(columns[5]);
                         student.Email = columns[6];
@@ -52,24 +53,28 @@ namespace APBD.Services
                         logger.Error(richException);
                     }
                 }
-                
+
                 stream.Dispose();
             }
-            
+
             return students;
         }
 
-        public static void StudentsToXML(Dictionary<string, Student> students)
+        public static void UniversityToXml(University university, string outputPath)
         {
-            foreach (var studentsKeyValue in students)
-            {
-                Student student = studentsKeyValue.Value;
+            TextWriter writer = new StreamWriter(outputPath);
 
-                XmlSerializer serializer = new XmlSerializer(student.GetType());
-                
-                serializer.Serialize(Console.Out, student);
-                Console.WriteLine();
-            }
+            XmlSerializer serializer = new XmlSerializer(university.GetType());
+
+            serializer.Serialize(writer, university);
+
+            writer.Close();
+        }
+        
+        public static void UniversityToJSON(University university, string outputPath)
+        {
+            string json = JsonSerializer.Serialize(university);
+            File.WriteAllText(outputPath, json);
         }
     }
 }

@@ -14,8 +14,8 @@ namespace APBD
         static void Main(string[] args)
         {
             var dataPath = "data.csv";
-            var resultPath = "żesult.xml";
-            var extensionType = "xml";
+            var resultPath = "żesult.json";
+            var extensionType = "json";
 
             if (!String.IsNullOrEmpty(args[0]))
             {
@@ -58,11 +58,25 @@ namespace APBD
             {
                 Console.WriteLine("Extension type not found, using: " + extensionType);
             }
-
-
+            
             Dictionary<string, Student> students = StudentParser.ParseStudentsFromCSV(dataPath);
+            
+            University university = new University();
+            
+            foreach (var studentKeyValue in students)
+            {
+                university.Students.Add(studentKeyValue.Value);
+            }
 
-            StudentParser.StudentsToXML(students);
+            if (extensionType.Equals("xml"))
+            {
+                StudentParser.UniversityToXml(university, resultPath);
+            }
+
+            if (extensionType.Equals("json"))
+            {
+                StudentParser.UniversityToJSON(university, resultPath);
+            }
         }
     }
 }
