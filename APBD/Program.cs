@@ -3,10 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using APBD.Exceptions;
 using APBD.Models;
+using APBD.Services;
 
 namespace APBD
 {
@@ -17,7 +16,7 @@ namespace APBD
             var dataPath = "data.csv";
             var resultPath = "żesult.xml";
             var extensionType = "xml";
-            
+
             if (!String.IsNullOrEmpty(args[0]))
             {
                 dataPath = args[0];
@@ -35,40 +34,35 @@ namespace APBD
                 throw new FileNotFoundException("Plik " + dataPath + " nie istnieje");
             }
 
-            if (!String.IsNullOrEmpty(args[1]))
+            try
             {
-                resultPath = args[1];
-            }
-            
-            if (!String.IsNullOrEmpty(args[2]))
-            {
-                extensionType = args[2];
-            }
-            
-            ArrayList Students = new ArrayList();
-            
-            var fi = new FileInfo(dataPath);
-            using (var stream = new StreamReader(fi.OpenRead()))
-            {
-                string line = null;
-                while ((line = stream.ReadLine()) != null)
+                if (!String.IsNullOrEmpty(args[1]))
                 {
-                    string[] columns = line.Split(',');
-                    
-                    Student Student = new Student();
-
-                    Student.Name = columns[0];
-                    Student.Surname = columns[1];
-                    Student.Studies = columns[2];
-                    Student.StudiesType = columns[3];
-                    Student.StudentId = columns[4];
-                    Student.Birthday = DateTime.Parse(columns[5]);
-                    Student.Email = columns[6];
-                    Student.MothersName = columns[7];
-                    Student.FathersName = columns[8];
+                    resultPath = args[1];
                 }
             }
-            //stream.Dispose();
+            catch (Exception e)
+            {
+                Console.WriteLine("Output path not found, using: " + resultPath);
+            }
+
+
+            try
+            {
+                if (!String.IsNullOrEmpty(args[2]))
+                {
+                    extensionType = args[2];
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Extension type not found, using: " + extensionType);
+            }
+
+
+            Dictionary<string, Student> students = StudentParser.ParseStudentsFromCSV(dataPath);
+
+            StudentParser.StudentsToXML(students);
         }
     }
 }

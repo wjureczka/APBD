@@ -1,35 +1,33 @@
 ﻿using System;
+using System.IO;
 
 namespace APBD.Services
 {
     public class Logger
     {
-        private Logger _logger;
-        private string errorLogFile = "łog.txt";
+        private static Logger loggerInstance = null;
+        private string errorLogFilePath = "./łog.txt";
 
         private Logger()
         {
-            
-        }
-        
-        private void WriteToFile(string fileName, string message)
-        {
-            
         }
 
-        public Logger GetLogger()
+        public static Logger GetInstance()
         {
-            if (_logger == null)
+            if (loggerInstance == null)
             {
-                this._logger = new Logger();
+                loggerInstance = new Logger();
             }
 
-            return this._logger;
+            return loggerInstance;
         }
 
-        public void Error(Exception exception) 
+        public void Error(Exception exception)
         {
-            this.WriteToFile(this.errorLogFile, exception.Message);
+            var exceptionMessage = exception.Message + "\n";
+            var errorPath = this.errorLogFilePath;
+            
+            File.AppendAllText(errorPath, exceptionMessage);
         }
     }
 }
