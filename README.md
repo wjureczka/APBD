@@ -1,2 +1,2 @@
 # APBD
-ćwiczenie drugie
+Repozytorium potrzebne za zajęcia APBD PJWSTK
