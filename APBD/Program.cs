@@ -68,11 +68,13 @@ namespace APBD
             if (extensionType.Equals("xml"))
             {
                 StudentParser.UniversityToXml(university, resultPath);
+                return;
             }
 
             if (extensionType.Equals("json"))
             {
                 StudentParser.UniversityToJSON(university, resultPath);
+                return;
             }
 
             throw new ArgumentException("There is no parser for extension");

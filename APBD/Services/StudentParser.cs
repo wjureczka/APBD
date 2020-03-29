@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using System.Xml.Serialization;
 using APBD.Exceptions;
 using APBD.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
 
 namespace APBD.Services
 {
@@ -72,7 +74,20 @@ namespace APBD.Services
         
         public static void UniversityToJSON(University university, string outputPath)
         {
-            string json = JsonSerializer.Serialize(university);
+            
+            DefaultContractResolver contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
+
+            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
+            {
+                ContractResolver = contractResolver,
+                Formatting = Formatting.Indented
+            };
+            
+            string json = JsonConvert.SerializeObject(university, jsonSerializerSettings);
+            
             File.WriteAllText(outputPath, json);
         }
     }
