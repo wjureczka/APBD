@@ -58,12 +58,7 @@ namespace APBD
             
             Dictionary<string, Student> students = StudentParser.ParseStudentsFromCSV(dataPath);
             
-            University university = new University();
-            
-            foreach (var studentKeyValue in students)
-            {
-                university.Students.Add(studentKeyValue.Value);
-            }
+            University university = new University(students);
 
             if (extensionType.Equals("xml"))
             {
