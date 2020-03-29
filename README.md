@@ -1,2 +1,2 @@
 # APBD
-ćwiczenie pierwsze
+ćwiczenie drugie
