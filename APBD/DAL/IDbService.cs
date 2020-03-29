@@ -7,5 +7,7 @@ namespace APBD.DAL
     public interface IDbService
     {
         public IEnumerable<Student> GetStudents();
+
+        public IEnumerable<Enrollment> GetStudentEnrollment(int studentId);
     }
 }

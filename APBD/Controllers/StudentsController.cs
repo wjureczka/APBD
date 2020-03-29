@@ -27,11 +27,22 @@ namespace APBD.Controllers
             return Ok(_dbService.GetStudents());
         }
 
+        [HttpGet("enrollment/{studentId:int}")]
+        public IActionResult GetStudentEnrollment(int studentId)
+        {
+            IEnumerable<Enrollment> enrollments = _dbService.GetStudentEnrollment(studentId);
+            
+            foreach (var enrollment in enrollments)
+            {
+                Console.WriteLine(enrollment);
+            }
+            
+            return Ok(enrollments);
+        }
+
         [HttpPost]
         public IActionResult CreateStudent(Student student)
         {
-            Console.WriteLine("dupa");
-            
             student.IndexNumber = $"s{new Random().Next(1, 2000)}";
 
             return Ok(student);
