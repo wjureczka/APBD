@@ -27,8 +27,8 @@ namespace APBD.Controllers
             return Ok(_dbService.GetStudents());
         }
 
-        [HttpGet("enrollment/{studentId:int}")]
-        public IActionResult GetStudentEnrollment(int studentId)
+        [HttpGet("enrollment/{studentId}")]
+        public IActionResult GetStudentEnrollment(string studentId)
         {
             IEnumerable<Enrollment> enrollments = _dbService.GetStudentEnrollment(studentId);
             

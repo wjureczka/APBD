@@ -39,7 +39,7 @@ namespace APBD.DAL
             return students;
         }
 
-        public IEnumerable<Enrollment> GetStudentEnrollment(int studentId)
+        public IEnumerable<Enrollment> GetStudentEnrollment(string studentId)
         {
             List<Enrollment> enrollments = new List<Enrollment>();
 
@@ -48,7 +48,9 @@ namespace APBD.DAL
             {
                 command.Connection = connection;
 
-                command.CommandText = $"SELECT * FROM dbo.ENROLLMENT WHERE IdEnrollment = (SELECT IDENROLLMENT FROM dbo.STUDENT WHERE INDEXNUMBER = ${studentId})";
+                command.CommandText = $"SELECT * FROM dbo.ENROLLMENT WHERE IdEnrollment = (SELECT IDENROLLMENT FROM dbo.STUDENT WHERE INDEXNUMBER = @studentId)";
+                // SQL Injection -> studentId = 1); DROP TABLE STUDENT; --
+                command.Parameters.AddWithValue("studentId", studentId);
 
                 connection.Open();
 

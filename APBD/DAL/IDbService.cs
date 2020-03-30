@@ -8,6 +8,6 @@ namespace APBD.DAL
     {
         public IEnumerable<Student> GetStudents();
 
-        public IEnumerable<Enrollment> GetStudentEnrollment(int studentId);
+        public IEnumerable<Enrollment> GetStudentEnrollment(string studentId);
     }
 }
