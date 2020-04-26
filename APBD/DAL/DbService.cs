@@ -62,9 +62,9 @@ namespace APBD.DAL
                     
                     Console.WriteLine(reader);
 
-                    enrollment.Semester = System.Convert.ToInt32(reader["Semester"].ToString());
-                    enrollment.IdEnrollment = System.Convert.ToInt32(reader["IdEnrollment"].ToString());
-                    enrollment.IdStudy = System.Convert.ToInt32(reader["IdStudy"].ToString());
+                    enrollment.Semester =  (int)reader["Semester"];
+                    enrollment.IdEnrollment =  (int)reader["IdEnrollment"];
+                    enrollment.IdStudy =  (int)reader["IdStudy"];
                     enrollment.StartDate = System.Convert.ToDateTime(reader["StartDate"].ToString());
                     
                     enrollments.Add(enrollment);
@@ -74,6 +74,36 @@ namespace APBD.DAL
             }
 
             return enrollments;
+        }
+
+        public Study GetStudy(string studyName)
+        {
+            using(var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17082;Integrated Security=True"))
+            using(var command = new SqlCommand())
+            {
+                command.Connection = connection;
+
+                command.CommandText = "SELECT * FROM STUDIES WHERE NAME = @studyName";
+                command.Parameters.AddWithValue("studyName", studyName);
+                
+                connection.Open();
+
+                var reader = command.ExecuteReader();
+
+                Study study = new Study();
+
+                if (!reader.Read())
+                {
+                    return null;
+                }
+                
+                study.IdStudy = (int)reader["IdStudy"];
+                study.Name = reader["Name"].ToString();
+                
+                connection.Close();
+
+                return study;
+            }
         }
     }
 }

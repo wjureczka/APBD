@@ -1,4 +1,6 @@
-﻿namespace APBD.Models
+﻿using System;
+
+namespace APBD.Models
 {
     public class Student
     {
@@ -9,5 +11,7 @@
         public string LastName { get; set; }
         
         public string IndexNumber { get; set; }
+        
+        public DateTime BirthDate { get; set; }
     }
 }
