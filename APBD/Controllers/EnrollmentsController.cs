@@ -40,13 +40,18 @@ namespace APBD.Controllers
                 return BadRequest("Study unavailable");
             }
 
+            DateTime enrollmentStartDate = DateTime.Now;
+
             using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17082;Integrated Security=True"))
             using (var command = new SqlCommand())
             {
+                
                 command.Connection = connection;
                 command.Connection.Open();
                 var transaction = command.Connection.BeginTransaction();
+                command.Transaction = transaction;
 
+                
                 try
                 {
                     command.CommandText = "SELECT IdEnrollment FROM ENROLLMENT WHERE IdStudy = @IdStudy AND Semester = 1";
@@ -58,10 +63,12 @@ namespace APBD.Controllers
                     {
                         command.CommandText = "INSERT INTO ENROLLMENT (Semester, IdStudy, StartDate) VALUES (1, @IdStudy, @StartDate)";
                         command.Parameters.AddWithValue("IdStudy", study.IdStudy);
-                        command.Parameters.AddWithValue("StartDate", DateTime.Now);
+                        command.Parameters.AddWithValue("StartDate", enrollmentStartDate);
 
                         command.ExecuteNonQuery();
                     }
+                    
+                    reader.Close();
                 }
                 catch (Exception error)
                 {
@@ -79,30 +86,35 @@ namespace APBD.Controllers
 
                     if (reader.Read())
                     {
+                        reader.Close();
                         transaction.Rollback();
                         return BadRequest("Student already exists");
                     }
+                    
+                    reader.Close();
                 }
                 catch (Exception error)
                 {
                     transaction.Rollback();
+                    Console.WriteLine(error);
                     return BadRequest("Student fetch failed");
                 }
 
                 try
                 {
                     command.CommandText = "SELECT IdEnrollment FROM ENROLLMENT WHERE IdStudy = @IdStudy AND Semester = 1";
-                    command.Parameters.AddWithValue("IdStudy", study.IdStudy);
 
                     var reader = command.ExecuteReader();
 
                     if (!reader.Read())
                     {
+                        reader.Close();
                         transaction.Rollback();
                         return BadRequest("No enrollment");
                     }
-                    int enrollmentId = (int) reader["IdEnrollment"];
 
+                    var enrollmentId = (int) reader["IdEnrollment"];
+                    reader.Close();
 
                     command.CommandText = "INSERT INTO STUDENT (IndexNumber, FirstName, LastName, BirthDate, IdEnrollment) VALUES (@IndexNumber, @FirstName, @LastName, @BirthDate, @IdEnrollment)";
                     command.Parameters.AddWithValue("IndexNumber", student.IndexNumber);
@@ -110,17 +122,27 @@ namespace APBD.Controllers
                     command.Parameters.AddWithValue("LastName", student.LastName);
                     command.Parameters.AddWithValue("BirthDate", student.BirthDate);
                     command.Parameters.AddWithValue("IdEnrollment", enrollmentId);
-
+                    
                     command.ExecuteNonQuery();
                 }
                 catch (Exception error)
                 {
                     transaction.Rollback();
+                    Console.WriteLine(error);
                     return BadRequest("Could not insert new student");
                 }
+                
+                transaction.Commit();
             }
-            
-            return Ok();
+
+            EnrollStudentResponse enrollStudentResponse = new EnrollStudentResponse()
+            {
+                Semester = 1,
+                LastName = student.LastName,
+                StartDate = enrollmentStartDate
+            };
+
+            return Ok(enrollStudentResponse);
         }
     }
 }
