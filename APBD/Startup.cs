@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using APBD.DAL;
+using APBD.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +28,7 @@ namespace APBD
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IDbService, DbService>();
+            services.AddTransient<IStudentsDbService, StudentsDbService>();
             services.AddControllers();
         }
 
