@@ -1,11 +1,5 @@
-﻿using System;
-using System.Data;
-using System.Data.Common;
-using System.Data.SqlClient;
-using APBD.DAL;
-using APBD.DTO.Requests;
+﻿using APBD.DTO.Requests;
 using APBD.DTO.Responses;
-using APBD.Models;
 using APBD.Services;
 using Microsoft.AspNetCore.Mvc;
 
