@@ -22,21 +22,18 @@ namespace APBD.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetStudent(string orderBy)
+        public IActionResult GetStudent()
         {
-            return Ok(_dbService.GetStudents());
+            IEnumerable<Student> students = _dbService.GetStudents();
+            
+            return Ok(students);
         }
 
         [HttpGet("enrollment/{studentId}")]
         public IActionResult GetStudentEnrollment(string studentId)
         {
             IEnumerable<Enrollment> enrollments = _dbService.GetStudentEnrollment(studentId);
-            
-            foreach (var enrollment in enrollments)
-            {
-                Console.WriteLine(enrollment);
-            }
-            
+
             return Ok(enrollments);
         }
 

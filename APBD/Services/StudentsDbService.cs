@@ -3,8 +3,6 @@ using System.Data;
 using System.Data.SqlClient;
 using APBD.DTO.Requests;
 using APBD.Models;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 
 namespace APBD.Services
 {

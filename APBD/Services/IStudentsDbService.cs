@@ -1,6 +1,5 @@
 ﻿using APBD.DTO.Requests;
 using APBD.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace APBD.Services
 {
