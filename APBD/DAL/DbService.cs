@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using APBD.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace APBD.DAL
 {
@@ -34,6 +35,8 @@ namespace APBD.DAL
                     student.LastName = reader["LastName"].ToString();
                     student.IndexNumber = reader["IndexNumber"].ToString();
                     student.BirthDate = (DateTime)reader["BirthDate"];
+                    student.Password = reader["Password"].ToString();
+                    student.RefreshToken = reader["RefreshToken"].ToString();
                 
                     connection.Close();
                 }
@@ -144,6 +147,77 @@ namespace APBD.DAL
 
                 return study;
             }
+        }
+
+        public void PutStudentRefreshToken(Student student, string refreshToken)
+        {
+            using(var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17082;Integrated Security=True"))
+            using(var command = new SqlCommand())
+            {
+                command.Connection = connection;
+
+                command.CommandText = "UPDATE Student SET RefreshToken=@refreshToken";
+                command.Parameters.AddWithValue("refreshToken", refreshToken);
+                
+                connection.Open();
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }        
+        }
+
+        [AllowAnonymous]
+        public Student CheckStudentRefreshToken(string refreshToken)
+        {
+            Student student = new Student();
+
+            try
+            {
+                using(var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17082;Integrated Security=True"))
+                using(var command = new SqlCommand())
+                {
+                    command.Connection = connection;
+
+                    command.CommandText = "SELECT * FROM STUDENT WHERE RefreshToken = @refreshToken";
+                    command.Parameters.AddWithValue("refreshToken", refreshToken);
+                    
+                    connection.Open();
+
+                    var reader = command.ExecuteReader();
+
+                    if (!reader.Read())
+                    {
+                        throw new Exception("Invalid");
+                    }
+                    
+                    student.FirstName = reader["FirstName"].ToString();
+                    student.LastName = reader["LastName"].ToString();
+                    student.IndexNumber = reader["IndexNumber"].ToString();
+                    student.BirthDate = (DateTime)reader["BirthDate"];
+                    student.Password = reader["Password"].ToString();
+                    student.RefreshToken = reader["RefreshToken"].ToString();
+
+                    connection.Close();
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw new Exception("Invalid");
+            }
+
+            return student;
         }
     }
 }

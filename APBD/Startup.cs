@@ -1,15 +1,18 @@
 using System;
 using System.Net;
+using System.Text;
 using APBD.DAL;
 using APBD.Middlewares;
 using APBD.Models;
 using APBD.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace APBD
@@ -28,6 +31,23 @@ namespace APBD
         {
             services.AddSingleton<IDbService, DbService>();
             services.AddTransient<IStudentsDbService, StudentsDbService>();
+
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidIssuer = "polsko",
+                        ValidAudience = "japonska",
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretsecretsecretsecretsecretsecretsecretsecret"))
+                    };
+                });
+            
+
             services.AddControllers();
         }
 
@@ -43,31 +63,9 @@ namespace APBD
 
             app.UseMiddleware<RequestLogger>();
 
-            app.Use(async (context, next) =>
-            {
-                context.Request.Headers.TryGetValue("Index", out var studentIndex);
-                
-                if (String.IsNullOrEmpty(studentIndex))
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    await context.Response.WriteAsync("");
-                    return;
-                }
-
-                Student student = service.GetStudent(studentIndex);
-
-                if (student == null)
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    await context.Response.WriteAsync("");
-                    return;
-                }
-                
-                await next();
-            });
-            
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

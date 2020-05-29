@@ -12,5 +12,9 @@ namespace APBD.DAL
         public IEnumerable<Enrollment> GetStudentEnrollment(string studentId);
         
         public Study GetStudy(string studyName);
+
+        public void PutStudentRefreshToken(Student student, string refreshToken);
+
+        public Student CheckStudentRefreshToken(string refreshToken);
     }
 }

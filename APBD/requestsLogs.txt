@@ -11,3 +11,80 @@ GET,/api/students/,{
     "Studies": "Techniczne",
     "Semester": "3"
 },?lel=3$
+GET,/api/students,,
+GET,/favicon.ico,,
+GET,/api/students/,{
+    "Login": "admin",
+    "Password": "admin"
+},
+GET,/api/students/,{
+    "Login": "admin",
+    "Password": "admin"
+},
+GET,/api/students,,
+GET,/favicon.ico,,
+GET,/api/students,,
+GET,/api/students,,
+GET,/favicon.ico,,
+GET,/api/students,,
+GET,/favicon.ico,,
+POST,/api/students/,,
+POST,/api/students/,,
+GET,/api/students,,
+GET,/api/students,,
+GET,/api/students,,
+POST,/api/students/login,,
+GET,/api/students,,
+GET,/api/students,,
+GET,/api/students,,
+POST,/api/students/login,,
+GET,/api/students,{
+    "Login": "s17000",
+    "Password": "s17000"
+},
+POST,/api/students/login,,
+GET,/api/students,{
+    "Login": "s17000",
+    "Password": "s17000"
+},
+GET,/api/students,{
+    "Login": "s17000",
+    "Password": "s17000"
+},
+GET,/api/students,{
+    "Login": "s17000",
+    "Password": "s17000"
+},
+GET,/api/students,{
+    "Login": "s17000",
+    "Password": "s17000"
+},
+GET,/api/students,{
+    "Login": "s17000",
+    "Password": "s17000"
+},
+GET,/api/students,{
+    "Login": "s17000",
+    "Password": "s17000"
+},
+GET,/api/students,,
+POST,/api/students/refresh-token/e195e2f0-1448-49a8-b2e6-31da1a716513,{
+    "Login": "s17000",
+    "Password": "s17000"
+},
+GET,/api/students,,
+POST,/api/students/refresh-token/e195e2f0-1448-49a8-b2e6-31da1a716513,{
+    "Login": "s17000",
+    "Password": "s17000"
+},
+GET,/api/students,,
+POST,/api/students/refresh-token/e195e2f0-1448-49a8-b2e6-31da1a716513,{
+    "Login": "s17000",
+    "Password": "s17000"
+},
+GET,/api/students,,
+POST,/api/students/login,,
+POST,/api/students/refresh-token/bb0e552a-1d97-4bbf-a697-2c77df93c296,{
+    "Login": "s17000",
+    "Password": "s17000"
+},
