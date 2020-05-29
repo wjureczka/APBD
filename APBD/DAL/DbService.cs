@@ -156,8 +156,9 @@ namespace APBD.DAL
             {
                 command.Connection = connection;
 
-                command.CommandText = "UPDATE Student SET RefreshToken=@refreshToken";
+                command.CommandText = "UPDATE Student SET RefreshToken=@refreshToken WHERE IndexNumber=@indexNumber";
                 command.Parameters.AddWithValue("refreshToken", refreshToken);
+                command.Parameters.AddWithValue("indexNumber", student.IndexNumber);
                 
                 connection.Open();
 
