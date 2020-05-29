@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using APBD.DAL;
 using APBD.DTO.Requests;
 using APBD.Models;
+using Konscious.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -45,12 +47,57 @@ namespace APBD.Controllers
             return Ok(enrollments);
         }
 
-        [HttpPost]
-        public IActionResult CreateStudent(Student student)
+        private static string CreateSalt()
         {
-            student.IndexNumber = $"s{new Random().Next(1, 2000)}";
+            byte[] randomBytes = new byte[128 / 8];
 
-            return Ok(student);
+            using (var generator = RandomNumberGenerator.Create())
+            {
+                generator.GetBytes(randomBytes);
+            };
+
+            return Convert.ToBase64String(randomBytes);
+        }
+
+        private static string CreatePasswordHash(string password, string salt)
+        {
+            byte[] passwordBytes = Encoding.ASCII.GetBytes(password);
+            byte[] saltBytes = Encoding.ASCII.GetBytes(salt);
+            
+            Argon2 hashedPassword = new Argon2d(passwordBytes)
+            {
+                Salt = saltBytes,
+                Iterations = 100,
+                MemorySize = 100,
+                DegreeOfParallelism = 8
+            };
+
+            byte[] bytesHashedPassword = hashedPassword.GetBytes(128);
+            
+            return Encoding.UTF8.GetString(bytesHashedPassword);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult CreateStudent(CreateStudentRequest studentRequest)
+        {
+            var salt = StudentsController.CreateSalt();
+            var password = studentRequest.Password;
+            var hashedPassword = CreatePasswordHash(password, salt);
+
+            Student student = new Student()
+            {
+                FirstName = studentRequest.FirstName,
+                LastName = studentRequest.LastName,
+                IndexNumber = studentRequest.IndexNumber,
+                Password = hashedPassword,
+                Salt = salt,
+                BirthDate = studentRequest.BirthDate,
+            };
+            
+            this._dbService.CreateStudent(student);
+            
+            return Ok(studentRequest);
         }
 
         [HttpPut("{id}")]
@@ -73,7 +120,14 @@ namespace APBD.Controllers
 
             var student = this._dbService.GetStudent(login);
 
-            if (student == null || !student.Password.Equals(password))
+            if (student == null)
+            {
+                return Unauthorized();
+            }
+
+            var hashedPassword = CreatePasswordHash(request.Password, student.Salt);
+            
+            if(!hashedPassword.Equals(student.Password))
             {
                 return Unauthorized();
             }

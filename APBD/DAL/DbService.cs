@@ -36,6 +36,7 @@ namespace APBD.DAL
                     student.IndexNumber = reader["IndexNumber"].ToString();
                     student.BirthDate = (DateTime)reader["BirthDate"];
                     student.Password = reader["Password"].ToString();
+                    student.Salt = reader["Salt"].ToString();
                     student.RefreshToken = reader["RefreshToken"].ToString();
                 
                     connection.Close();
@@ -219,6 +220,38 @@ namespace APBD.DAL
             }
 
             return student;
+        }
+
+        public async void CreateStudent(Student student)
+        {
+            try
+            {
+                using(var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17082;Integrated Security=True"))
+                using(var command = new SqlCommand())
+                {
+                    command.Connection = connection;
+                    
+                    command.CommandText = "INSERT INTO STUDENT (IndexNumber, FirstName, LastName, BirthDate, Password, Salt) VALUES (@IndexNumber, @FirstName, @LastName, @BirthDate, @Password, @Salt)";
+                    command.Parameters.AddWithValue("IndexNumber", student.IndexNumber);
+                    command.Parameters.AddWithValue("FirstName", student.FirstName);
+                    command.Parameters.AddWithValue("LastName", student.LastName);
+                    command.Parameters.AddWithValue("BirthDate", student.BirthDate);
+                    command.Parameters.AddWithValue("Password", student.Password);
+                    command.Parameters.AddWithValue("Salt", student.Salt);
+                    
+                    connection.Open();
+
+                    await command.ExecuteNonQueryAsync();
+                    
+                    connection.Close();
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw new Exception("Invalid");
+            }
+
         }
     }
 }

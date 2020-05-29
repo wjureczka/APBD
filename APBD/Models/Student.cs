@@ -16,6 +16,8 @@ namespace APBD.Models
         
         public string Password { get; set; }
         
+        public string Salt { get; set; }
+        
         public string RefreshToken { get; set; }
     }
 }

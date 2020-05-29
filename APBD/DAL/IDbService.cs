@@ -16,5 +16,7 @@ namespace APBD.DAL
         public void PutStudentRefreshToken(Student student, string refreshToken);
 
         public Student CheckStudentRefreshToken(string refreshToken);
+
+        public void CreateStudent(Student student);
     }
 }
