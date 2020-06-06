@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+using APBD.DAL;
 using APBD.DTO.Requests;
 using APBD.Models;
 
@@ -68,6 +70,8 @@ namespace APBD.Services
 
         public StudentEnrollment EnrollStudent(EnrollStudentRequest enrollStudentRequest)
         {
+            var dbContext = new DbContext();
+            
             Student student = new Student
             {
                 FirstName = enrollStudentRequest.FirstName,
@@ -75,117 +79,21 @@ namespace APBD.Services
                 IndexNumber = enrollStudentRequest.IndexNumber,
                 BirthDate = enrollStudentRequest.BirthDate,
             };
+
+            Study study = dbContext.Study.Where(s => s.Name == enrollStudentRequest.Studies).First();
+
+
+            if (study.Name == null)
+            {
+                return null;
+            }
             
-            Study study;
-            try
-            {
-                study = this.GetStudy(enrollStudentRequest.Studies);
-            }
-            catch (Exception exception)
-            {
-                throw exception;
-            }
-
-            DateTime enrollmentStartDate = DateTime.Now;
-
-            using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17082;Integrated Security=True"))
-            using (var command = new SqlCommand())
-            {
-                command.Connection = connection;
-                command.Connection.Open();
-                var transaction = command.Connection.BeginTransaction();
-                command.Transaction = transaction;
-
-                try
-                {
-                    command.CommandText = "SELECT IdEnrollment FROM ENROLLMENT WHERE IdStudy = @IdStudy AND Semester = 1";
-                    command.Parameters.AddWithValue("IdStudy", study.IdStudy);
-
-                    var reader = command.ExecuteReader();
-
-                    if (!reader.Read())
-                    {
-                        command.CommandText =
-                            "INSERT INTO ENROLLMENT (Semester, IdStudy, StartDate) VALUES (1, @IdStudy, @StartDate)";
-                        command.Parameters.AddWithValue("IdStudy", study.IdStudy);
-                        command.Parameters.AddWithValue("StartDate", enrollmentStartDate);
-
-                        command.ExecuteNonQuery();
-                    }
-
-                    reader.Close();
-                }
-                catch (Exception error)
-                {
-                    transaction.Rollback();
-                    Console.WriteLine(error);
-                    throw new Exception("Enrollment read error");
-                }
-
-                try
-                {
-                    command.CommandText = "SELECT * FROM STUDENT WHERE IndexNumber = @studentIndexNumber";
-                    command.Parameters.AddWithValue("studentIndexNumber", student.IndexNumber);
-
-                    var reader = command.ExecuteReader();
-
-                    if (reader.Read())
-                    {
-                        reader.Close();
-                        transaction.Rollback();
-                        throw new Exception("Student already exists");
-                    }
-
-                    reader.Close();
-                }
-                catch (Exception error)
-                {
-                    transaction.Rollback();
-                    Console.WriteLine(error);
-                    throw new Exception("Student fetch failed");
-                }
-
-                try
-                {
-                    command.CommandText =
-                        "SELECT IdEnrollment FROM ENROLLMENT WHERE IdStudy = @IdStudy AND Semester = 1";
-
-                    var reader = command.ExecuteReader();
-
-                    if (!reader.Read())
-                    {
-                        reader.Close();
-                        transaction.Rollback();
-                        throw new Exception("No enrollment");
-                    }
-
-                    var enrollmentId = (int) reader["IdEnrollment"];
-                    reader.Close();
-
-                    command.CommandText = "INSERT INTO STUDENT (IndexNumber, FirstName, LastName, BirthDate, IdEnrollment) VALUES (@IndexNumber, @FirstName, @LastName, @BirthDate, @IdEnrollment)";
-                    command.Parameters.AddWithValue("IndexNumber", student.IndexNumber);
-                    command.Parameters.AddWithValue("FirstName", student.FirstName);
-                    command.Parameters.AddWithValue("LastName", student.LastName);
-                    command.Parameters.AddWithValue("BirthDate", student.BirthDate);
-                    command.Parameters.AddWithValue("IdEnrollment", enrollmentId);
-
-                    command.ExecuteNonQuery();
-                }
-                catch (Exception error)
-                {
-                    transaction.Rollback();
-                    Console.WriteLine(error);
-                    throw new Exception("Student enrollment fail");
-                }
-
-                transaction.Commit();
-            }
 
             return new StudentEnrollment()
             {
                 Semester = 1,
                 LastName = student.LastName,
-                StartDate = enrollmentStartDate
+                StartDate = DateTime.Now
             };
         }
 
