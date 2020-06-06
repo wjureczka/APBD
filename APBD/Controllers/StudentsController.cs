@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -37,6 +38,71 @@ namespace APBD.Controllers
             IEnumerable<Student> students = _dbService.GetStudents();
             
             return Ok(students);
+        }
+        
+        [HttpGet("with-db-context")]
+        [AllowAnonymous]
+        public IActionResult GetStudentsWithDbContext()
+        {
+            var dbContext = new DbContext();
+
+            var studentsFromDbContext = dbContext.Student;
+
+            return Ok(studentsFromDbContext);
+        }
+        
+        [HttpDelete("with-db-context/{indexNumber}")]
+        [AllowAnonymous]
+        public IActionResult DeleteStudentWithDbContext(string indexNumber)
+        {
+            Console.WriteLine("Deleting");
+            
+            try
+            {
+                var dbContext = new DbContext();
+
+                var student = dbContext.Student.Where(s => s.IndexNumber == indexNumber).First();
+
+                dbContext.Remove(student);
+
+                dbContext.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return NotFound();
+            }
+
+            return Ok();
+        }
+        
+        [HttpPut("with-db-context")]
+        [AllowAnonymous]
+        public IActionResult DeleteStudentWithDbContext(Student studentRequest)
+        {
+            Console.WriteLine("Updating");
+            
+            try
+            {
+                var dbContext = new DbContext();
+
+                var student = dbContext.Student.Where(s => s.IndexNumber == studentRequest.IndexNumber).First();
+
+                student.BirthDate = studentRequest.BirthDate;
+                student.FirstName = studentRequest.FirstName;
+                student.LastName = studentRequest.LastName;
+                
+                dbContext.Update(student);
+
+                dbContext.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return NotFound();
+            }
+
+            return Ok();
         }
 
         [HttpGet("enrollment/{studentId}")]

@@ -119,3 +119,95 @@ POST,/api/students,,
 GET,/api/students,,
 GET,/api/students,,
 POST,/api/students/login,,
+GET,/favicon.ico,,
+GET,/api/students,,
+GET,/api/students,,
+GET,/api/students,,
+GET,/api/students,,
+GET,/api/students,,
+DELETE,/api/with-db-context/33,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+DELETE,/api/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+DELETE,/api/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+GET,/api/students,,
+DELETE,/api/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+DELETE,/api/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+GET,/api/students,,
+DELETE,/api/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+DELETE,/api/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+GET,/api/students,,
+GET,/api/students,,
+DELETE,/api/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+DELETE,/api/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+DELETE,/api/students/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+DELETE,/api/students/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+DELETE,/api/students/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+GET,/api/students,,
+DELETE,/api/students/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+DELETE,/api/students/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+DELETE,/api/students/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+DELETE,/api/students/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+GET,/api/students,,
+DELETE,/api/students/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+GET,/api/students,,
+DELETE,/api/students/with-db-context/123456,{
+    "Login": "s1111",
+    "Password": "lol"
+},
+GET,/api/students,,
+GET,/api/students,,
+GET,/api/students,,
+GET,/api/students,,
+GET,/favicon.ico,,
+GET,/api/students/with-db-context,,
+PUT,/api/students/with-db-context,,
