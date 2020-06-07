@@ -1,10 +1,14 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace APBD.DTO.Requests
+namespace APBD.Model
 {
-    public class CreateStudentRequest
+    public class Patient
     {
+        [DatabaseGenerated((DatabaseGeneratedOption.Identity))]
+        public int IdPatient { get; set; }
+        
         [Required]
         [MaxLength(100)]
         public string FirstName { get; set; }
@@ -14,13 +18,6 @@ namespace APBD.DTO.Requests
         public string LastName { get; set; }
         
         [Required]
-        [RegularExpression("^s[0-9]+$")]
-        public string IndexNumber { get; set; }
-        
-        [Required]
         public DateTime BirthDate { get; set; }
-        
-        [Required]
-        public string Password { get; set; }
     }
 }
