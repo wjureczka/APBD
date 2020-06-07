@@ -17,5 +17,7 @@ namespace APBD.Models
         public string Salt { get; set; }
         
         public string RefreshToken { get; set; }
+        
+        public int IdEnrollment { get; set; }
     }
 }

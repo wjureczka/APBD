@@ -1,6 +1,6 @@
 ﻿namespace APBD.Models
 {
-    public class Study
+    public class Studies
     {
         public int IdStudy { get; set; }
         

@@ -21,7 +21,7 @@ namespace APBD.DAL
         
         public virtual DbSet<Enrollment> Enrollment { get; set; }
 
-        public virtual DbSet<Study> Study { get; set; }
+        public virtual DbSet<Studies> Studies { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -44,7 +44,7 @@ namespace APBD.DAL
                 entity.HasKey(e => e.IdEnrollment);
             });
             
-            modelBuilder.Entity<Study>(entity =>
+            modelBuilder.Entity<Studies>(entity =>
             {
                 entity.HasKey(e => e.IdStudy);
             });

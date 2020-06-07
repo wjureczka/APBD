@@ -11,7 +11,7 @@ namespace APBD.DAL
 
         public IEnumerable<Enrollment> GetStudentEnrollment(string studentId);
         
-        public Study GetStudy(string studyName);
+        public Studies GetStudy(string studyName);
 
         public void PutStudentRefreshToken(Student student, string refreshToken);
 

@@ -77,27 +77,80 @@ namespace APBD.Services
                 FirstName = enrollStudentRequest.FirstName,
                 LastName = enrollStudentRequest.LastName,
                 IndexNumber = enrollStudentRequest.IndexNumber,
-                BirthDate = enrollStudentRequest.BirthDate,
+                BirthDate = enrollStudentRequest.BirthDate
             };
 
-            Study study = dbContext.Study.Where(s => s.Name == enrollStudentRequest.Studies).First();
-
-
-            if (study.Name == null)
+            try
             {
-                return null;
+                dbContext.Student.Add(student);
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            Studies studies = null;
+
+            try
+            {
+                studies = dbContext.Studies.Where(s => s.Name == enrollStudentRequest.Studies).First();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Nie ma takich studiów");
+            }
+
+            if (studies == null)
+            {
+                
+                 studies = new Studies
+                {
+                    Name = enrollStudentRequest.Studies
+                };
+
+                 dbContext.Studies.Add(studies);
+                 dbContext.SaveChanges();
+            }
+
+            Enrollment enrollment = null;
             
+            try
+            {
+                enrollment = dbContext.Enrollment.Where(e => e.IdStudy == studies.IdStudy).First();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Nie ma takich zapisów");
+            }
+
+            if (enrollment == null)
+            {
+                enrollment =  new Enrollment
+                {
+                    Semester = 1,
+                    IdStudy = studies.IdStudy,
+                    StartDate = DateTime.Now
+                };
+
+                dbContext.Add(enrollment);
+                dbContext.SaveChanges();
+            }
+
+            student.IdEnrollment = enrollment.IdEnrollment;
+
+            dbContext.Update(student);
+
+            dbContext.SaveChanges();
 
             return new StudentEnrollment()
             {
-                Semester = 1,
+                Semester = enrollment.Semester,
                 LastName = student.LastName,
-                StartDate = DateTime.Now
+                StartDate = enrollment.StartDate
             };
         }
 
-        public Study GetStudy(string studyName)
+        public Studies GetStudy(string studyName)
         {
             using(var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17082;Integrated Security=True"))
             using(var command = new SqlCommand())
@@ -111,19 +164,19 @@ namespace APBD.Services
 
                 var reader = command.ExecuteReader();
 
-                Study study = new Study();
+                Studies studies = new Studies();
 
                 if (!reader.Read())
                 {
                     throw new Exception("No studies");
                 }
                 
-                study.IdStudy = (int)reader["IdStudy"];
-                study.Name = reader["Name"].ToString();
+                studies.IdStudy = (int)reader["IdStudy"];
+                studies.Name = reader["Name"].ToString();
                 
                 connection.Close();
 
-                return study;
+                return studies;
             }
         }
     }

@@ -120,7 +120,7 @@ namespace APBD.DAL
             return enrollments;
         }
 
-        public Study GetStudy(string studyName)
+        public Studies GetStudy(string studyName)
         {
             using(var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17082;Integrated Security=True"))
             using(var command = new SqlCommand())
@@ -134,19 +134,19 @@ namespace APBD.DAL
 
                 var reader = command.ExecuteReader();
 
-                Study study = new Study();
+                Studies studies = new Studies();
 
                 if (!reader.Read())
                 {
                     return null;
                 }
                 
-                study.IdStudy = (int)reader["IdStudy"];
-                study.Name = reader["Name"].ToString();
+                studies.IdStudy = (int)reader["IdStudy"];
+                studies.Name = reader["Name"].ToString();
                 
                 connection.Close();
 
-                return study;
+                return studies;
             }
         }
 

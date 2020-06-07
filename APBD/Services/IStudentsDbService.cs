@@ -9,6 +9,6 @@ namespace APBD.Services
 
         public StudentEnrollment EnrollStudent(EnrollStudentRequest enrollStudentRequest);
 
-        public Study GetStudy(string studyName);
+        public Studies GetStudy(string studyName);
     }
 }
